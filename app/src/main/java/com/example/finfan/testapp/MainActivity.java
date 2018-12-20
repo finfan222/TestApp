@@ -1,6 +1,7 @@
 package com.example.finfan.testapp;
 
 import android.os.Bundle;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -117,7 +118,7 @@ public class MainActivity extends AppCompatActivity {
 
         lastResult = Math.sqrt(val1);
 		outputResultText.append(String.valueOf(lastResult) + "\n");
-		outputOperationText.append(inputText.getText() + " " + EOpType.SQRT.symbol + "\n");
+		outputOperationText.append(EOpType.SQRT.symbol + inputText.getText() + "\n");
         inputText.setText("");
     }
 
@@ -188,8 +189,8 @@ public class MainActivity extends AppCompatActivity {
 		}
 
 		this.opType = type;
-		outputOperationText.append(inputText.getText() + " " + type.symbol);
-		inputText.setText("");
+		outputOperationText.append(inputText.getText() + type.symbol);
+		//inputText.setText("");
 	}
 
     private void updateCursorSelection() {
