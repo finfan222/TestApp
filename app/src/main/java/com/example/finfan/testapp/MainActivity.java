@@ -41,7 +41,6 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         inputText = (EditText) findViewById(R.id.result);
-        inputText.setSelection(0);
 
 		outputResultText = (TextView) findViewById(R.id.journal);
 		outputOperationText = (TextView) findViewById(R.id.journal2);
@@ -87,7 +86,7 @@ public class MainActivity extends AppCompatActivity {
         });*/
     }
 
-    public void onClickButton_Add(View v) {
+	public void onClickButton_Add(View v) {
 		handleOperate(v, EOpType.ADD);
     }
 
@@ -102,6 +101,7 @@ public class MainActivity extends AppCompatActivity {
     public void onClickButton_Div(View v) {
 		handleOperate(v, EOpType.DIV);
     }
+
     public void onClickButton_Sqrt(View v) {
 
         if(checkNullOrEmptyField()) {
@@ -123,13 +123,15 @@ public class MainActivity extends AppCompatActivity {
 
     public void onClickButton_Clear(View v) {
         inputText.setText("");
+        outputOperationText.setText("");
+        outputResultText.setText("");
         opType = null;
     }
 
     public void onClickButton_Equal(View v) {
         String text = inputText.getText().toString();
 
-        if(text.equalsIgnoreCase("0") || text == null || text.isEmpty()) {
+        if(text.equalsIgnoreCase("0") || text == null || text.isEmpty() || text.equalsIgnoreCase(ACTION_FAILED)) {
             inputText.setText("0");
             updateCursorSelection();
             return;
@@ -160,6 +162,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
 		outputResultText.append(String.valueOf(lastResult) + "\n");
+        outputOperationText.append(String.valueOf(val2) + "\n");
         opType = null;
         inputText.setText("");
     }
@@ -185,7 +188,7 @@ public class MainActivity extends AppCompatActivity {
 		}
 
 		this.opType = type;
-		outputOperationText.append(inputText.getText() + " " + type.symbol + "\n");
+		outputOperationText.append(inputText.getText() + " " + type.symbol);
 		inputText.setText("");
 	}
 
@@ -194,6 +197,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private boolean checkNullOrEmptyField() {
-    	return inputText.getText() == null || inputText.getText().length() == 0 || inputText.getText().toString().equalsIgnoreCase(ACTION_FAILED);
+    	return inputText.getText() == null
+				|| inputText.getText().length() == 0
+				|| inputText.getText().toString().equalsIgnoreCase(ACTION_FAILED);
 	}
 }
