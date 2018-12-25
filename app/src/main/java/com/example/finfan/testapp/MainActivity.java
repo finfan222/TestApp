@@ -12,6 +12,9 @@ import androidx.appcompat.app.AppCompatActivity;
  * <ul>
  *     <li>Double click on operation</li>
  *     <li>Trying to call equal button more than one times</li>
+ *     <li>Minimize the text size automaticcally when numbers after point is more than now</li>
+ *     <li>Feature: copy old result to set a new calc</li>
+ *     <li>Can't set the positive or negative sign to a value</li>
  * </ul>
  */
 public class MainActivity extends AppCompatActivity {
@@ -249,8 +252,9 @@ public class MainActivity extends AppCompatActivity {
 
 			if(result != null) {
 				String resultValue = String.valueOf(result);
-				resultField.setText("= " + (resultValue.contains(".") ? resultValue : String.format("%.0f", resultValue)));
+				resultField.setText("= " + (resultValue.contains(".") ? resultValue : String.format("%", resultValue)));
 			}
+
 			calcField.setText("");
 			mustBeCalculated = false;
 		} else {
