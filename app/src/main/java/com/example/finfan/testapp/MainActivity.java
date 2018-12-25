@@ -1,16 +1,19 @@
 package com.example.finfan.testapp;
 
 import android.os.Bundle;
-import android.renderscript.Long2;
-import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
-import java.util.ArrayDeque;
-
 import androidx.appcompat.app.AppCompatActivity;
 
+/**
+ * Current troubles:
+ * <ul>
+ *     <li>Double click on operation</li>
+ *     <li>Trying to call equal button more than one times</li>
+ * </ul>
+ */
 public class MainActivity extends AppCompatActivity {
 
 	private static final String ACTION_FAILED = "Invalid value.";
@@ -24,8 +27,11 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
 		calcField = (TextView) findViewById(R.id.idown);
 		resultField = (TextView) findViewById(R.id.iup);
+
+		////////////////////////////////////////////////////////////////////////////// Number buttons handle
 
 		b0 = (Button) findViewById(R.id.b0);
 		b0.setOnClickListener(new View.OnClickListener() {
@@ -107,38 +113,45 @@ public class MainActivity extends AppCompatActivity {
 			}
 		});
 
+		//////////////////////////////////////////////////////////////////////////// Operations Buttons
+
+		// operation add val1 to val2
 		bAdd = (Button) findViewById(R.id.bAdd);
 		bAdd.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				handle("+");
+				handleOperateBtn("+");
 			}
 		});
 
+		// opeartion substract val1 from val2
 		bSub = (Button) findViewById(R.id.bSub);
 		bSub.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				handle("-");
+				handleOperateBtn("-");
 			}
 		});
 
+		// operation miltiplies the val1 by val2
 		bMul = (Button) findViewById(R.id.bMul);
 		bMul.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				handle("×");
+				handleOperateBtn("×");
 			}
 		});
 
+		// operation divide of val1 by val2
 		bDiv = (Button) findViewById(R.id.bDiv);
 		bDiv.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				handle("÷");
+				handleOperateBtn("÷");
 			}
 		});
 
+		// operation equal (finalize) when other oepration is called
 		bEqual = (Button) findViewById(R.id.bEqual);
 		bEqual.setOnClickListener(new View.OnClickListener() {
 			@Override
@@ -146,21 +159,22 @@ public class MainActivity extends AppCompatActivity {
 				mustBeCalculated = true;
 				final String calcText = calcField.getText().toString();
 				if (calcText.contains("+")) {
-					handle("+");
+					handleOperateBtn("+");
 				} else if(calcText.contains("-")) {
-					handle("-");
+					handleOperateBtn("-");
 				} else if(calcText.contains("×")) {
-					handle("×");
+					handleOperateBtn("×");
 				} else if(calcText.contains("÷")) {
-					handle("÷");
+					handleOperateBtn("÷");
 				} else if (calcText.contains("%")) {
-					handle("%");
+					handleOperateBtn("%");
 				} else {
 					mustBeCalculated = false;
 				}
 			}
 		});
 
+		// operation delete last symbol
 		bDel = (Button) findViewById(R.id.bDel);
 		bDel.setOnClickListener(new View.OnClickListener() {
 			@Override
@@ -171,6 +185,7 @@ public class MainActivity extends AppCompatActivity {
 			}
 		});
 
+		// operation clear all windows and data
 		bClear = (Button) findViewById(R.id.bClear);
 		bClear.setOnClickListener(new View.OnClickListener() {
 			@Override
@@ -181,6 +196,7 @@ public class MainActivity extends AppCompatActivity {
 			}
 		});
 
+		// set the point in number (refactor number to double)
 		bPoint = (Button) findViewById(R.id.bPoint);
 		bPoint.setOnClickListener(new View.OnClickListener() {
 			@Override
@@ -189,6 +205,7 @@ public class MainActivity extends AppCompatActivity {
 			}
 		});
 
+		// divide by module and get the remain as result
 		bModule = (Button) findViewById(R.id.bModule);
 		bModule.setOnClickListener(new View.OnClickListener() {
 			@Override
@@ -198,7 +215,7 @@ public class MainActivity extends AppCompatActivity {
 		});
 	}
 
-	private void handle(String operation) {
+	private void handleOperateBtn(String operation) {
     	if(calcField.length() <= 0) {
     		return;
 		}
@@ -256,10 +273,6 @@ public class MainActivity extends AppCompatActivity {
 			}
 			mustBeCalculated = true;
 		}
-	}
-
-	private boolean isDouble(String source) {
-    	return source.contains(bPoint.getText());
 	}
 
 	private void handleNumBtn(Button btn) {
