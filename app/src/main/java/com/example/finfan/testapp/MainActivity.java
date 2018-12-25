@@ -1,12 +1,12 @@
 package com.example.finfan.testapp;
 
 import android.os.Bundle;
-import android.view.KeyEvent;
+import android.renderscript.Long2;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
-import android.widget.ScrollView;
 import android.widget.TextView;
+
+import java.util.ArrayDeque;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -14,192 +14,192 @@ public class MainActivity extends AppCompatActivity {
 
 	private static final String ACTION_FAILED = "Invalid value.";
 
-    private EditText inputText;
-    private TextView outputResultText, outputOperationText;
-    private double val1, val2;
-    private double lastResult;
+    private TextView calcField, resultField;
 
-    //private Button buttonAdd, buttonSub, buttonMul, buttonDiv, buttonSqrt;
-
-    private enum EOpType {
-        ADD("+"),
-        SUB("-"),
-        MUL("*"),
-        DIV("÷"),
-        SQRT("√");
-
-        private final String symbol;
-
-        private EOpType(String symbol) {
-        	this.symbol = symbol;
-		}
-    }
-
-    private EOpType opType;
+    private Button b0,b1,b2,b3,b4,b5,b6,b7,b8,b9,bAdd,bSub,bEqual,bMul,bDiv,bClear,bDel;
+    private boolean mustBeCalculated;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        inputText = (EditText) findViewById(R.id.result);
+		calcField = (TextView) findViewById(R.id.idown);
+		resultField = (TextView) findViewById(R.id.iup);
+		b0 = (Button) findViewById(R.id.b0);
+		b0.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				handleNumBtn(b0.getText());
+			}
+		});
 
-		outputResultText = (TextView) findViewById(R.id.journal);
-		outputOperationText = (TextView) findViewById(R.id.journal2);
+		b1 = (Button) findViewById(R.id.b1);
+		b1.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				handleNumBtn(b1.getText());
+			}
+		});
 
-        /*buttonAdd = (Button) findViewById(R.id.btn_add);
-        buttonAdd.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                EOperateType.handleButtonClick(v, buttonAdd.getId());
-            }
-        });
+		b2 = (Button) findViewById(R.id.b2);
+		b2.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				handleNumBtn(b2.getText());
+			}
+		});
 
-        buttonSub = (Button) findViewById(R.id.btn_sub);
-        buttonSub.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                EOperateType.handleButtonClick(v, buttonSub.getId());
-            }
-        });
+		b3 = (Button) findViewById(R.id.b3);
+		b3.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				handleNumBtn(b3.getText());
+			}
+		});
 
-        buttonMul = (Button) findViewById(R.id.btn_mul);
-        buttonMul.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                EOperateType.handleButtonClick(v, buttonMul.getId());
-            }
-        });
+		b4 = (Button) findViewById(R.id.b4);
+		b4.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				handleNumBtn(b4.getText());
+			}
+		});
 
-        buttonDiv = (Button) findViewById(R.id.btn_div);
-        buttonDiv.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                EOperateType.handleButtonClick(v, buttonDiv.getId());
-            }
-        });
+		b5 = (Button) findViewById(R.id.b5);
+		b5.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				handleNumBtn(b5.getText());
+			}
+		});
 
-        buttonSqrt = (Button) findViewById(R.id.btn_sqrt);
-        buttonSqrt.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                EOperateType.handleButtonClick(v, buttonSqrt.getId());
-            }
-        });*/
-    }
+		b6 = (Button) findViewById(R.id.b6);
+		b6.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				handleNumBtn(b6.getText());
+			}
+		});
 
-	public void onClickButton_Add(View v) {
-		handleOperate(v, EOpType.ADD);
-    }
+		b7 = (Button) findViewById(R.id.b7);
+		b7.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				handleNumBtn(b7.getText());
+			}
+		});
 
-    public void onClickButton_Sub(View v) {
-		handleOperate(v, EOpType.SUB);
-    }
+		b8 = (Button) findViewById(R.id.b8);
+		b8.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				handleNumBtn(b8.getText());
+			}
+		});
 
-    public void onClickButton_Mul(View v) {
-		handleOperate(v, EOpType.MUL);
-    }
+		b9 = (Button) findViewById(R.id.b9);
+		b9.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				handleNumBtn(b9.getText());
+			}
+		});
 
-    public void onClickButton_Div(View v) {
-		handleOperate(v, EOpType.DIV);
-    }
+		bAdd = (Button) findViewById(R.id.bAdd);
+		bAdd.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				handle("\\+");
+			}
+		});
 
-    public void onClickButton_Sqrt(View v) {
+		bSub = (Button) findViewById(R.id.bSub);
+		bSub.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				handle("-");
+			}
+		});
 
-        if(checkNullOrEmptyField()) {
-            inputText.setText(ACTION_FAILED);
-            return;
-        }
+		bMul = (Button) findViewById(R.id.bMul);
+		bMul.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				handle("×");
+			}
+		});
 
-        val1 = Integer.parseInt(inputText.getText().toString());
-        if(val1 < 0) {
-            inputText.setText(ACTION_FAILED);
-            return;
-        }
+		bDiv = (Button) findViewById(R.id.bDiv);
+		bDiv.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				handle("÷");
+			}
+		});
 
-        lastResult = Math.sqrt(val1);
-		outputResultText.append(String.valueOf(lastResult) + "\n");
-		outputOperationText.append(EOpType.SQRT.symbol + inputText.getText() + "\n");
-        inputText.setText("");
-    }
+		bEqual = (Button) findViewById(R.id.bEqual);
+		bEqual.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				mustBeCalculated = true;
+				final String calcText = calcField.getText().toString();
+				if (calcText.contains("+")) {
+					handle("\\+");
+				} else if(calcText.contains("-")) {
+					handle("-");
+				} else if(calcText.contains("×")) {
+					handle("×");
+				} else if(calcText.contains("÷")) {
+					handle("÷");
+				}
+			}
+		});
 
-    public void onClickButton_Clear(View v) {
-        inputText.setText("");
-        outputOperationText.setText("");
-        outputResultText.setText("");
-        opType = null;
-    }
-
-    public void onClickButton_Equal(View v) {
-        String text = inputText.getText().toString();
-
-        if(text.equalsIgnoreCase("0") || text == null || text.isEmpty() || text.equalsIgnoreCase(ACTION_FAILED)) {
-            inputText.setText("0");
-            updateCursorSelection();
-            return;
-        }
-
-        val2 = Integer.parseInt(text);
-
-        switch(opType) {
-            case ADD:
-                lastResult = val1 + val2;
-                break;
-
-            case SUB:
-                lastResult = val1 - val2;
-                break;
-
-            case MUL:
-                lastResult = val1 * val2;
-                break;
-
-            case DIV:
-                if(val2 <= 0) {
-                    inputText.setText(ACTION_FAILED);
-                    return;
-                }
-                lastResult = val1 / val2;
-                break;
-        }
-
-		outputResultText.append(String.valueOf(lastResult) + "\n");
-        outputOperationText.append(String.valueOf(val2) + "\n");
-        opType = null;
-        inputText.setText("");
-    }
-
-    public boolean needEqualize(View v, EOpType opType) {
-        if(this.opType == null) {
-            return false;
-        }
-
-        onClickButton_Equal(v);
-        return true;
-    }
-
-    private void handleOperate(View v, EOpType type) {
-		if(checkNullOrEmptyField()) {
-			inputText.setText(ACTION_FAILED);
-			return;
-		}
-
-		val1 = Integer.parseInt(inputText.getText().toString());
-		if(needEqualize(v, EOpType.ADD)) {
-			return;
-		}
-
-		this.opType = type;
-		outputOperationText.append(inputText.getText() + type.symbol);
-		//inputText.setText("");
+		bDel = (Button) findViewById(R.id.bDel);
+		bClear = (Button) findViewById(R.id.bClear);
 	}
 
-    private void updateCursorSelection() {
-        inputText.setSelection(inputText.getText().length());
-    }
+	private void handle(String operation) {
+		if(mustBeCalculated) {
+			String[] splitter = calcField.getText().toString().split(operation);
+			int result = 0;
+			switch(operation) {
+				case "+":
+					result = Integer.parseInt(splitter[0]) + Integer.parseInt(splitter[1]);
+					break;
+				case "-":
+					result = Integer.parseInt(splitter[0]) - Integer.parseInt(splitter[1]);
+					break;
+				case "×":
+					result = Integer.parseInt(splitter[0]) * Integer.parseInt(splitter[1]);
+					break;
+				case "÷":
+					result = Integer.parseInt(splitter[0]) / Integer.parseInt(splitter[1]);
+					break;
+			}
+			resultField.setText(String.valueOf(result));
+			calcField.setText("");
+			mustBeCalculated = false;
+		} else {
+			switch(operation) {
+				case "+":
+					calcField.append(bAdd.getText());
+					break;
+				case "-":
+					calcField.append(bSub.getText());
+					break;
+				case "×":
+					calcField.append(bMul.getText());
+					break;
+				case "÷":
+					calcField.append(bDiv.getText());
+					break;
+			}
+			mustBeCalculated = true;
+		}
+	}
 
-    private boolean checkNullOrEmptyField() {
-    	return inputText.getText() == null
-				|| inputText.getText().length() == 0
-				|| inputText.getText().toString().equalsIgnoreCase(ACTION_FAILED);
+	private void handleNumBtn(CharSequence btntext) {
+		calcField.append(btntext);
 	}
 }
